@@ -33,3 +33,4 @@
 .idea
 .vscode
 cpp/libs
+cpp/server/libs
