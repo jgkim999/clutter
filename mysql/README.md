@@ -6,7 +6,7 @@
 ## general_log 설정
 
 ```bash
-mysql -h localhost -P 3306 --protocol=tcp -u root -p  
+mysql -h localhost -P 3306 --protocol=tcp -u root -p
 
 # general log 설정 확인
 SHOW VARIABLES LIKE '%general%';
