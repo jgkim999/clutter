@@ -34,3 +34,7 @@
 .vscode
 cpp/libs
 cpp/server/libs
+cpp/redis_demo/.vs
+cpp/redis_demo/RedisDemo/x64
+cpp/redis_demo/x64/Debug
+cpp/redis_demo/build
