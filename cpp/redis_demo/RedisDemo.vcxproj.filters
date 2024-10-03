@@ -8,5 +8,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RedisDemo.cpp" />
+    <ClCompile Include="AppLogger.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AppLogger.h" />
   </ItemGroup>
 </Project>

@@ -111,10 +111,13 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)3rd_party/debug/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmtd.lib;hiredisd.lib;redis++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)3rd_party\debug\bin\fmtd.dll $(SolutionDir)$(PlatformName)\$(Configuration)\fmtd.dll</Command>
+      <Command>copy $(SolutionDir)3rd_party\debug\bin\fmtd.dll $(SolutionDir)$(PlatformName)\$(Configuration)\fmtd.dll
+copy $(SolutionDir)3rd_party\debug\bin\hiredisd.dll $(SolutionDir)$(PlatformName)\$(Configuration)\hiredisd.dll
+copy "$(SolutionDir)3rd_party\debug\bin\redis++.dll" "$(SolutionDir)$(PlatformName)\$(Configuration)\redis++.dll"
+copy $(SolutionDir)3rd_party\debug\bin\spdlogd.dll $(SolutionDir)$(PlatformName)\$(Configuration)\spdlogd.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,7 +137,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppLogger.cpp" />
     <ClCompile Include="RedisDemo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AppLogger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

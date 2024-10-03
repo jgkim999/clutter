@@ -1,49 +1,89 @@
-﻿#include <iostream>
-#include <fmt/core.h>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/rotating_file_sink.h>
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include <spdlog/async.h>
+﻿#include <spdlog/spdlog.h>
+#include <sw/redis++/redis++.h>
+#include "AppLogger.h"
 
 int main()
 {
-    spdlog::init_thread_pool(8192, 1);
-    auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
-    auto max_size = 1048576 * 5;
-    auto max_files = 3;
-    auto rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("logs/rotating.txt", max_size, max_files);
-    std::vector<spdlog::sink_ptr> sinks{ stdout_sink, rotating_sink };
-    auto logger = std::make_shared<spdlog::async_logger>(
-        "logger",
-        sinks.begin(),
-        sinks.end(),
-        spdlog::thread_pool(),
-        spdlog::async_overflow_policy::block);
-    spdlog::set_default_logger(logger);
-    spdlog::flush_every(std::chrono::seconds(3));
+	AppLogger appLogger;
+        
+	spdlog::info("Start app");
 
-    //std::cout << "Hello World!\n";
-    //fmt::print("Hello World!\n");
+	auto redis = sw::redis::Redis("tcp://192.168.0.47:6379");
 
-    spdlog::info("Welcome to spdlog!");
-    spdlog::error("Some error message with arg: {}", 1);
-    spdlog::warn("Easy padding in numbers like {:08d}", 12);
-    spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
-    spdlog::info("Support for floats {:03.2f}", 1.23456);
-    spdlog::info("Positional args are {1} {0}..", "too", "supported");
-    spdlog::info("{:<30}", "left aligned");
+    // ***** SET commands *****
+    {
+        spdlog::info("Set ----------------------");
+        redis.set("key1", "val1", std::chrono::minutes(1));
+        auto val = redis.get("key1");    // val is of type OptionalString. See 'API Reference' section for details.
+        if (val)
+        {
+            spdlog::info(val.value());
+        }
+        else
+        {
+            spdlog::error("Failed to get value from redis");
+        }
+		// utf8 support
+        redis.set(u8"키2", u8"값2", std::chrono::minutes(1));
+    }
+    // ***** LIST commands *****
+    {
+        spdlog::info("List ---------------------");
+        std::string listKey = "list";
+        std::vector<std::string> vec = { "a", "b", "c" };
+        redis.rpush(listKey, vec.begin(), vec.end());
+        redis.expire(listKey, std::chrono::minutes(1));
 
-    //spdlog::set_level(spdlog::level::debug); // Set global log level to debug
-    //spdlog::debug("This message should be displayed..");
+        // std::initializer_list to Redis LIST.
+        redis.rpush(listKey, { "a", "b", "c" });
 
-    // change log pattern
-    //spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
+        // Redis LIST to std::vector<std::string>.
+        vec.clear();
+        redis.lrange(listKey, 0, -1, std::back_inserter(vec));
 
-    // Compile time log levels
-    // Note that this does not change the current log level, it will only
-    // remove (depending on SPDLOG_ACTIVE_LEVEL) the call on the release code.
-    //SPDLOG_TRACE("Some trace message with param {}", 42);
-    //SPDLOG_DEBUG("Some debug message");
+        const char* const delim = ", ";
+        std::ostringstream imploded;
+        std::copy(
+            vec.begin(),
+            vec.end(),
+            std::ostream_iterator<std::string>(imploded, delim));
+        spdlog::info("list size:{} value:{}", vec.size(), imploded.str());
+    }
+    // ***** HASH commands *****
+    {
+        spdlog::info("Hash ---------------------");
+		std::string hashKey = "hash";
+        redis.hset(hashKey, "field1", "val1");
+        redis.expire(hashKey, std::chrono::minutes(1));
+
+        // Another way to do the same job.
+        redis.hset(hashKey, std::make_pair("field2", "val2"));
+
+        // std::unordered_map<std::string, std::string> to Redis HASH.
+        std::unordered_map<std::string, std::string> m = {
+            {"field3", "val3"},
+            {"field4", "val4"}
+        };
+        redis.hmset(hashKey, m.begin(), m.end());
+
+        // Redis HASH to std::unordered_map<std::string, std::string>.
+        m.clear();
+        redis.hgetall(hashKey, std::inserter(m, m.begin()));
+       
+        spdlog::info("{} size:{}", hashKey, m.size());
+		for (const auto& keyValue : m)
+		{
+			spdlog::info("{0}:{1}", keyValue.first, keyValue.second);
+		}
+
+        // Get value only.
+        // NOTE: since field might NOT exist, so we need to parse it to OptionalString.
+        std::vector<sw::redis::OptionalString> vals;
+        redis.hmget(hashKey, { "field1", "field2", "field3", "field4" }, std::back_inserter(vals));
+		for (const auto& val : vals)
+		{
+            spdlog::info("val:{0}", val.value());
+		}
+    }
 	return 0;
 }
