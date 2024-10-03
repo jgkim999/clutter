@@ -138,10 +138,15 @@ copy $(SolutionDir)3rd_party\debug\bin\spdlogd.dll $(SolutionDir)$(PlatformName)
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppLogger.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="RedisDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppLogger.h" />
+    <ClInclude Include="RedisDemo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

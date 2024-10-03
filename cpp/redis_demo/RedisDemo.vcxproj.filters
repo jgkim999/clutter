@@ -7,10 +7,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RedisDemo.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="AppLogger.cpp" />
+    <ClCompile Include="RedisDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppLogger.h" />
+    <ClInclude Include="RedisDemo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
 </Project>
