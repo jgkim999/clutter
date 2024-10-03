@@ -1,0 +1,72 @@
+services:
+  redis-node-1:
+    image: redis:latest
+    container_name: redis-node-1
+    restart: unless-stopped
+    hostname: redis-node-1
+    labels:
+      - "name=redis-node-1"
+    ports:
+      - 6381:6379
+    volumes:
+      - ./redis-cluster_data-1:/data
+      - ./redis-node-1.conf:/etc/redis.conf
+    command: redis-server /etc/redis.conf
+    environment:
+      - 'REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4'
+    networks:
+      - default
+  redis-node-2:
+    image: redis:latest
+    container_name: redis-node-2
+    restart: unless-stopped
+    hostname: redis-node-2
+    labels:
+      - "name=redis-node-2"
+    ports:
+      - 6382:6379
+    volumes:
+      - ./redis-cluster_data-2:/data
+      - ./redis-node-2.conf:/etc/redis.conf
+    command: redis-server /etc/redis.conf
+    environment:
+      - 'REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4'
+    networks:
+      - default
+  redis-node-3:
+    image: redis:latest
+    container_name: redis-node-3
+    restart: unless-stopped
+    hostname: redis-node-3
+    labels:
+      - "name=redis-node-3"
+    ports:
+      - 6383:6379
+    volumes:
+      - ./redis-cluster_data-3:/data
+      - ./redis-node-3.conf:/etc/redis.conf
+    command: redis-server /etc/redis.conf
+    environment:
+      - 'REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4'
+    networks:
+      - default
+  redis-node-4:
+    image: redis:latest
+    container_name: redis-node-4
+    restart: unless-stopped
+    hostname: redis-node-4
+    labels:
+      - "name=redis-node-4"
+    ports:
+      - 6384:6379
+    volumes:
+      - ./redis-cluster_data-4:/data
+      - ./redis-node-4.conf:/etc/redis.conf
+    command: redis-server /etc/redis.conf
+    environment:
+      - 'REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4'
+    networks:
+      - default
+networks:
+  compose_network:
+    driver: bridge
