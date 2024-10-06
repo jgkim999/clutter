@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 3.10)
 
 project(RedisDemo)
 
-find_package(fmt CONFIG REQUIRED)
-find_package(redis++ CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
+find_package(fmt)
+find_package(redis++)
+find_package(spdlog)
 
-add_executable(RedisDemo RedisDemo.cpp)
+add_executable(
+    RedisDemo
+    main.cpp
+    AppLogger.cpp
+    RedisDemo.cpp)
 
 target_link_libraries(RedisDemo PRIVATE fmt::fmt)
 target_link_libraries(RedisDemo PRIVATE redis++::redis++)

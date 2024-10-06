@@ -10,10 +10,19 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="AppLogger.cpp" />
     <ClCompile Include="RedisDemo.cpp" />
+    <ClCompile Include="RedisClusterDemo.cpp" />
+    <ClCompile Include="RedisClusterManager.cpp" />
+    <ClCompile Include="crc.cpp" />
+    <ClCompile Include="RedisManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppLogger.h" />
     <ClInclude Include="RedisDemo.h" />
+    <ClInclude Include="RedisClusterDemo.h" />
+    <ClInclude Include="RedisClusterManager.h" />
+    <ClInclude Include="RedisManager.h" />
+    <ClInclude Include="crc.h" />
+    <ClInclude Include="RedisOption.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

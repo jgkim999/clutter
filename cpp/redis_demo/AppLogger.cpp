@@ -10,22 +10,29 @@
 AppLogger::AppLogger()
 {
     spdlog::init_thread_pool(8192, 1);
-    auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
+
+    auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+
     auto max_size = 1048576 * 5;
     auto max_files = 3;
     auto rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("logs/app_log.txt", max_size, max_files);
+
     std::vector<spdlog::sink_ptr> sinks{ stdout_sink, rotating_sink };
+
     logger_ = std::make_shared<spdlog::async_logger>(
         "logger",
         sinks.begin(),
         sinks.end(),
         spdlog::thread_pool(),
         spdlog::async_overflow_policy::block);
+
     spdlog::set_default_logger(logger_);
+
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
     spdlog::flush_every(std::chrono::seconds(3));
-    // change log pattern
+
+    //change log pattern
     //spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
     /*
     spdlog::info("Welcome to spdlog!");
