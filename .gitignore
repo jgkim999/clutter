@@ -40,3 +40,5 @@ cpp/redis_demo/logs
 .vs
 cpp/redis_demo/out/build/Visual Studio Community 2022 Release - amd64/CMakeFiles
 cpp/redis_demo/out
+build
+cpp/redis_demo/x64
